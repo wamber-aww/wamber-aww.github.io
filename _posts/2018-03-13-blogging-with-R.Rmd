@@ -1,0 +1,61 @@
+---
+layout: single
+title:  "Writing Posts with R Studio and Jekyll"
+date:   2018-03-13 13:30:15
+categories: projects
+tags:
+  - R
+  - resource
+header:
+  teaser: /assets/images/blog/2018-03-13-blog-R.png
+toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R markdown
+I would like to first talk about how to write blog posts using 
+[R Markdown](http://rmarkdown.rstudio.com)
+since this is the main language I program in. R Markdown is probably one of the best things I've discovered after mac and cheese, tater tots, and fried chicken (yay America). I digressed. After spending weeks figuring out how Jekyll works and setting up the basis of my blog, I was excited to dump all my R Markdown files and just publish everything. Unfortunately, things are never that simple, in life or in coding.
+
+Simply put, .Rmd files are not processed by Jekyll, so a .md file has to be generated accompanying any .Rmd file and sent to Jekyll. The most straightforward way is to copy the contents of an R Markdown file to a Markdown file, reformat the code chunks and link the figure outputs. The catch is that it's annoying, especially when there are figure outputs that have to be embedded manually into the blog post. An alternative is to have a function that automatically generates .md files for each .Rmd file, tracks the output images, and feeds it into Jekyll. I highly recommend reading 
+[this post](https://brendanrocks.com/blogging-with-rmarkdown-knitr-jekyll/)
+to learn more about integrating R Markdown, knitr, and Jekyll for blogging.
+
+## Blogdown
+There are acutally multiple ways to blog with R Markdown. I came across 
+[Blogdown](https://bookdown.org/yihui/blogdown/jekyll.html)
+that worked really well for me without having to change any codes. Basically, `.Rprofile`, `R/build.R`, and `R/build_one.R` are the required files to work with blogdown-jekyll. The codes and detailed explanations can be found on the page above. Next, install blogdown and serve Jekyll.
+
+```{r blogdown, eval = FALSE}
+devtools::install_github("rstudio/blogdown")
+servr::jekyll()
+```
+
+Now you can start blogging! The coolest thing is that once a R Markdown file is saved, the .md and HTML output is autoregenerated  
+
+![Screenshot](/assets/images/blog/2018-03-13-blog-R-2.png)
+
+## Examples
+Using the default codes in the R Markdown file, the outputs are as follows.
+
+### Statistics output
+```{r cars}
+summary(cars)
+```
+
+### Including plots
+Plots are automatically saved into a `figure` directory and linked when the HTML file is generated - so you don't have to manually track down the figures and move them into the correct direcoty! The other thing I specified is `dpi = 300` to increase the resolution.
+
+```{r pressure, echo = TRUE, dpi = 300}
+plot(pressure)
+```
+
+## Notes
+Blogdown works perfectly when I'm writing posts under the `_posts` directory. However, if I write under other directories, `_pages`, `collections`, etc. the R Markdown files don't autoregenerate anymore and would only work if I am in the subdirectory - as a result, the `figure` direcory is generated under these subdirectories. This screws up the link to the figures in the HTML file as it is configured as `base url/figure/` but not `base url/subdirectory/figure/`. I haven't had success with customizing this part yet.
+
+## Other resources
+1. [blogdown-jekyll](https://github.com/yihui/blogdown-jekyll)
+1. [Charlotte-NGS](http://charlotte-ngs.github.io/2014/09/jekyll-with-knitr.html)
